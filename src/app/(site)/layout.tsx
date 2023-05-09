@@ -1,6 +1,8 @@
 import "../globals.css";
 import { Alexandria } from "next/font/google";
 
+import ToasterContext from "@/context/ToasterContext";
+
 const font = Alexandria({ subsets: ["latin"] });
 
 export const metadata = {
@@ -15,7 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={font.className}>{children}</body>
+      <body className={font.className}>
+        <ToasterContext />
+        {children}
+      </body>
     </html>
   );
 }

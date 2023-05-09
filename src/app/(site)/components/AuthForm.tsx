@@ -4,6 +4,9 @@
 import { useCallback, useState } from "react";
 
 // External packages.
+import axios from "axios";
+import { signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 import { BsGithub } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { FieldValues, useForm, SubmitHandler } from "react-hook-form";
@@ -25,6 +28,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -43,18 +47,32 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
     setIsLoading(true);
 
     if (variant === "REGISTER") {
-      // Register logic.
+      axios
+        .post("/api/auth/register", data)
+        .then(() => reset())
+        .catch(() => toast.error("Something went wrong."))
+        .finally(() => setIsLoading(false));
     }
 
     if (variant === "LOGIN") {
-      // Login logic.
+      signIn("credentials", { ...data, redirect: false })
+        .then((callback) => {
+          if (callback?.error) toast.error("Invalid credentials.");
+          if (callback?.ok && !callback.error) toast.success("Logged in.");
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
   const socialAction = (action: string) => {
     setIsLoading(true);
 
-    // Social login logic.
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) toast.error("Invalid credentials.");
+        if (callback?.ok && !callback.error) toast.success("Logged in.");
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
