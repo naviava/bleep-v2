@@ -59,11 +59,13 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
 
   return (
     <>
+      {/* Header. */}
       <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
         {variant === "LOGIN" ? "Sign in to your account" : "Create an account"}
       </h2>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
+          {/* Form. */}
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {variant === "REGISTER" && (
               <Input
@@ -71,6 +73,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
                 label="Name"
                 register={register}
                 errors={errors}
+                disabled={isLoading}
               />
             )}
             <Input
@@ -79,6 +82,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
               type="email"
               register={register}
               errors={errors}
+              disabled={isLoading}
             />
             <Input
               id="password"
@@ -86,6 +90,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
               type="password"
               register={register}
               errors={errors}
+              disabled={isLoading}
             />
             <div>
               <Button type="submit" disabled={isLoading} fullWidth>
@@ -93,6 +98,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
               </Button>
             </div>
           </form>
+          {/* Social login. */}
           <div className="mt-6">
             {/* Intersecting line and text. */}
             <div className="relative">
@@ -108,11 +114,13 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
               </div>
             </div>
             <div className="mt-6 flex gap-2">
+              {/* Github login. */}
               <AuthSocialButton
                 icon={BsGithub}
                 label="Github"
                 onClick={() => socialAction("github")}
               />
+              {/* Google login. */}
               <AuthSocialButton
                 icon={FcGoogle}
                 label="Google"
@@ -120,6 +128,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
               />
             </div>
           </div>
+          {/* Footer. */}
           <div className="mt-6 flex justify-center gap-2 px-2 text-sm text-gray-500">
             <div>
               {variant === "LOGIN"
