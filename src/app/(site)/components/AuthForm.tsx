@@ -22,8 +22,8 @@ type Variant = "LOGIN" | "REGISTER";
 interface AuthFormProps {}
 
 const AuthForm: React.FC<AuthFormProps> = ({}) => {
-  const session = useSession();
   const router = useRouter();
+  const session = useSession();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -50,7 +50,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
     []
   );
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
     if (variant === "REGISTER") {
