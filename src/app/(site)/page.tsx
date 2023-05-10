@@ -5,7 +5,7 @@ import Image from "next/image";
 import AuthForm from "./components/AuthForm";
 
 // Libs and utils.
-import { images } from "@/lib/utils";
+import { images } from "@/utils/utils";
 
 export default function Home() {
   return (

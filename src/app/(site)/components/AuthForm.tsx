@@ -1,11 +1,12 @@
 "use client";
 
 // React and Next.
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // External packages.
 import axios from "axios";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { BsGithub } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
@@ -21,8 +22,14 @@ type Variant = "LOGIN" | "REGISTER";
 interface AuthFormProps {}
 
 const AuthForm: React.FC<AuthFormProps> = ({}) => {
+  const session = useSession();
+  const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (session?.status === "authenticated") router.push("/users");
+  }, [session, router]);
 
   // React Hook Form.
   const {
@@ -49,7 +56,10 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
     if (variant === "REGISTER") {
       axios
         .post("/api/auth/register", data)
-        .then(() => reset())
+        .then(() => {
+          reset();
+          signIn("credentials", data);
+        })
         .catch(() => toast.error("Something went wrong."))
         .finally(() => setIsLoading(false));
     }
@@ -58,7 +68,10 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
       signIn("credentials", { ...data, redirect: false })
         .then((callback) => {
           if (callback?.error) toast.error("Invalid credentials.");
-          if (callback?.ok && !callback.error) toast.success("Logged in.");
+          if (callback?.ok && !callback.error) {
+            toast.success("Logged in.");
+            router.push("/users");
+          }
         })
         .finally(() => setIsLoading(false));
     }

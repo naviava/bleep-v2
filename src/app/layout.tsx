@@ -1,6 +1,7 @@
-import "../globals.css";
+import "./globals.css";
 import { Alexandria } from "next/font/google";
 
+import AuthContext from "@/context/AuthContext";
 import ToasterContext from "@/context/ToasterContext";
 
 const font = Alexandria({ subsets: ["latin"] });
@@ -18,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <ToasterContext />
-        {children}
+        <AuthContext>
+          <ToasterContext />
+          {children}
+        </AuthContext>
       </body>
     </html>
   );
