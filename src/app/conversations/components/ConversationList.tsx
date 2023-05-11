@@ -22,7 +22,7 @@ interface ConversationListProps {
 const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
 }) => {
-  const routr = useRouter();
+  const router = useRouter();
   const [items, setItems] = useState(initialItems);
   const { conversationId, isOpen } = useConversation();
 
@@ -35,11 +35,19 @@ const ConversationList: React.FC<ConversationListProps> = ({
     >
       <div className="px-5">
         <div className="mb-4 flex justify-between pt-4">
-          <div className="text-2xl font-bold text-neutral-800">Messages</div>
+          <div className="text-2xl font-bold text-neutral-800">Bleeps</div>
           <div className="cursor-pointer rounded-full bg-gray-100 p-2 text-gray-600 shadow-sm transition duration-300 hover:bg-sky-500 hover:text-white">
             <MdOutlineGroupAdd size={20} />
           </div>
         </div>
+        {items.length === 0 && (
+          <div className="text-center">
+            <h3 className="mt-10 text-2xl text-gray-900">No Bleeps!</h3>
+            <p className="mt-2 text-center text-sm font-light text-gray-500">
+              Start chatting by looking for Bleeple.
+            </p>
+          </div>
+        )}
         {items.map((item) => (
           <ConversationBox
             key={item.id}

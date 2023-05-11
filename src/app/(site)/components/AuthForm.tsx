@@ -28,7 +28,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (session?.status === "authenticated") router.push("/users");
+    if (session?.status === "authenticated") router.push("/conversations");
   }, [session, router]);
 
   // React Hook Form.
@@ -68,10 +68,7 @@ const AuthForm: React.FC<AuthFormProps> = ({}) => {
       signIn("credentials", { ...data, redirect: false })
         .then((callback) => {
           if (callback?.error) toast.error("Invalid credentials.");
-          if (callback?.ok && !callback.error) {
-            toast.success("Logged in.");
-            router.push("/users");
-          }
+          if (callback?.ok && !callback.error) toast.success("Logged in.");
         })
         .finally(() => setIsLoading(false));
     }
