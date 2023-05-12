@@ -1,7 +1,7 @@
 "use client";
 
 // React and Next.
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 
 // External packages.
 import { format } from "date-fns";
@@ -12,7 +12,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import useChatPartner from "@/hooks/useChatPartner";
 
 // Components.
+import Modal from "@/components/Modal";
 import Avatar from "@/components/Avatar";
+import ConfirmModal from "./ConfirmModal";
 
 // Lib and utils.
 import { Conversation, User } from "@prisma/client";
@@ -31,6 +33,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   onClose,
 }) => {
   const chatPartner = useChatPartner(conversation);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const joinedDate = useMemo(
     () => format(new Date(chatPartner.createdAt), "PP"),
@@ -50,6 +53,10 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 
   return (
     <>
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+      />
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={onClose}>
           {/* Background. */}
@@ -104,7 +111,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                           </div>
                           <div className="my-8 flex gap-10">
                             <div
-                              onClick={() => {}}
+                              onClick={() => setIsConfirmOpen(true)}
                               className="flex cursor-pointer flex-col items-center gap-3"
                             >
                               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-rose-600 transition hover:bg-neutral-200 hover:text-rose-500">
