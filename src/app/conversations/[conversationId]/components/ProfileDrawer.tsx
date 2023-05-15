@@ -8,6 +8,9 @@ import { format } from "date-fns";
 import { IoClose, IoTrash } from "react-icons/io5";
 import { Dialog, Transition } from "@headlessui/react";
 
+// Custom hooks.
+import useActiveList from "@/hooks/useActiveList";
+
 // Types.
 import useChatPartner from "@/hooks/useChatPartner";
 
@@ -35,6 +38,9 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 }) => {
   const chatPartner = useChatPartner(conversation);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const { members } = useActiveList();
+
+  const isActive = members.indexOf(chatPartner?.email!) !== -1;
 
   const joinedDate = useMemo(
     () => format(new Date(chatPartner.createdAt), "PP"),
@@ -49,8 +55,8 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   const statusText = useMemo(() => {
     if (conversation.isGroup) return `${conversation.users.length} members`;
 
-    return "Active";
-  }, [conversation]);
+    return isActive ? "Active" : "Offline";
+  }, [conversation, isActive]);
 
   return (
     <>

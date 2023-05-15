@@ -10,6 +10,7 @@ import { HiEllipsisHorizontal } from "react-icons/hi2";
 
 // Custom hooks.
 import useChatPartner from "@/hooks/useChatPartner";
+import useActiveList from "@/hooks/useActiveList";
 
 // Types.
 import { Conversation, User } from "@prisma/client";
@@ -26,12 +27,15 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
   const chatPartner = useChatPartner(conversation);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { members } = useActiveList();
+
+  const isActive = members.indexOf(chatPartner?.email!) !== -1;
 
   const statusText = useMemo(() => {
     if (conversation.isGroup) return `${conversation.users.length} members`;
 
-    return "Online";
-  }, [conversation.isGroup, conversation.users.length]);
+    return isActive ? "Active" : "Offline";
+  }, [conversation.isGroup, conversation.users.length, isActive]);
 
   return (
     <>

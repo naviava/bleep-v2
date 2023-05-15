@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 // Lib and utils.
 import prisma from "@/lib/prismadb";
 import getCurrentUser from "@/utils/getCurrentUser";
+import { pusherServer } from "@/lib/pusher";
 
 export async function POST(req: Request) {
   try {
@@ -38,6 +39,11 @@ export async function POST(req: Request) {
         include: { users: true },
       });
 
+      newConversation.users.forEach((user) => {
+        if (user.email)
+          pusherServer.trigger(user.email, "conversation:new", newConversation);
+      });
+
       return NextResponse.json(newConversation);
     }
 
@@ -58,6 +64,11 @@ export async function POST(req: Request) {
     const newConversation = await prisma.conversation.create({
       data: { users: { connect: [{ id: currentUser.id }, { id: userId }] } },
       include: { users: true },
+    });
+
+    newConversation.users.forEach((user) => {
+      if (user.email)
+        pusherServer.trigger(user.email, "conversation:new", newConversation);
     });
 
     return NextResponse.json(newConversation);
