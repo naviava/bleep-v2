@@ -25,11 +25,12 @@ const Body: React.FC<BodyProps> = ({ initialMessages }) => {
   const { conversationId } = useConversation();
 
   useEffect(() => {
+    bottomRef.current?.scrollIntoView();
     axios.post(`/api/conversations/${conversationId}/seen`);
   }, [conversationId]);
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-scroll">
       {messages.map((message, idx) => (
         <MessageBox
           key={message.id}

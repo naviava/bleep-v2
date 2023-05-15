@@ -13,9 +13,11 @@ import { useSession } from "next-auth/react";
 import useChatPartner from "@/hooks/useChatPartner";
 
 // Types.
-import { Conversation, Message, User } from "@prisma/client";
 import { FullConversationType } from "@/types";
+
+// Components.
 import Avatar from "@/components/Avatar";
+import AvatarGroup from "@/components/AvatarGroup";
 
 interface ConversationBoxProps {
   data: FullConversationType;
@@ -67,7 +69,11 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         selected ? "bg-neutral-100" : "bg-white"
       )}
     >
-      <Avatar user={chatPartner} />
+      {data.isGroup ? (
+        <AvatarGroup users={data.users} />
+      ) : (
+        <Avatar user={chatPartner} />
+      )}
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
           <div className="mb-1 flex items-center justify-between">

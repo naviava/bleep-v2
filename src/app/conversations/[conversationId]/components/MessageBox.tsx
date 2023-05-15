@@ -1,18 +1,20 @@
 "use client";
 
 // React and Next.
-import { useSession } from "next-auth/react";
+import { useState } from "react";
 import Image from "next/image";
 
 // External packages.
 import clsx from "clsx";
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 
 // Types.
 import { FullMessageType } from "@/types";
 
 // Components.
 import Avatar from "@/components/Avatar";
+import ImageModal from "./ImageModal";
 
 interface MessageBoxProps {
   isLast: boolean;
@@ -21,6 +23,7 @@ interface MessageBoxProps {
 
 const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
   const session = useSession();
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   const isOwnMessage = session?.data?.user?.email === message.sender.email;
 
@@ -33,7 +36,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
   const avatar = clsx(isOwnMessage && "order-2");
   const body = clsx("flex flex-col gap-2", isOwnMessage && "items-end");
   const messageContent = clsx(
-    "text-sm w-fit overflow-hidden",
+    "text-sm w-fit overflow-hidden max-w-md",
     isOwnMessage ? "bg-sky-500 text-white" : "bg-gray-100",
     message.image ? "rounded-md p-0" : "rounded-full py-2 px-3"
   );
@@ -51,6 +54,11 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
           </div>
         </div>
         <div className={messageContent}>
+          <ImageModal
+            src={message.image}
+            isOpen={isImageModalOpen}
+            onClose={() => setIsImageModalOpen(false)}
+          />
           {message.image ? (
             <Image
               src={message.image}
@@ -58,6 +66,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
               width="288"
               height="288"
               className="translate cursor-pointer object-cover transition hover:scale-110"
+              onClick={() => setIsImageModalOpen(true)}
             />
           ) : (
             <div>{message.body}</div>
