@@ -1,5 +1,8 @@
 "use client";
 
+// React and Next.
+import { useState } from "react";
+
 // External packages.
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -17,6 +20,7 @@ import MessageInput from "./MessageInput";
 interface FormProps {}
 
 const Form: React.FC<FormProps> = ({}) => {
+  const [isLoading, setIsLoading] = useState(false);
   const { conversationId } = useConversation();
 
   const {
@@ -27,10 +31,12 @@ const Form: React.FC<FormProps> = ({}) => {
   } = useForm<FieldValues>({ defaultValues: { message: "" } });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true);
     axios
       .post("/api/messages", { ...data, conversationId })
       .then(() => setValue("message", "", { shouldValidate: true }))
-      .catch(() => toast.error("Couldn't send message. Try again."));
+      .catch(() => toast.error("Couldn't send message. Try again."))
+      .finally(() => setIsLoading(false));
   };
 
   const handleImageUpload = (image: any) => {
@@ -65,6 +71,7 @@ const Form: React.FC<FormProps> = ({}) => {
         />
         <button
           type="submit"
+          disabled={isLoading}
           className="cursor-pointer rounded-full bg-sky-500 p-2 text-white transition hover:bg-sky-600"
         >
           <FaPaperPlane />
